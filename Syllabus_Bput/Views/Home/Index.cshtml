@@ -1,0 +1,241 @@
+﻿@{
+    var syllabusList = ViewBag.SyllabusList as SelectList;
+    var selectedItemId = ViewBag.SelectedItemId as string;
+
+    var semesterList = ViewBag.SemesterList as SelectList;
+    var selectedSemId = ViewBag.SelectedSemId as string;
+
+    var CourseList = ViewBag.CourseList as SelectList;
+    var selectedCourse = ViewBag.selectedCourse as string;
+
+    var BranchList = ViewBag.BranchList as SelectList;
+    var selectedBranch = ViewBag.selectedBranch as string;
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $("#ddlCourse").change(function () {
+                var selectedCourse = $(this).val();
+
+                if (selectedCourse !== '') {
+
+                    window.location.href = '@Url.Action("BindSyllabus", "Home")?Cour=' + selectedCourse;
+                }
+            });
+
+            $("#ddlSyllabus").change(function () {
+                var selectedSyllabusId = $(this).val();
+
+                if (selectedSyllabusId !== '') {
+                    window.location.href = '@Url.Action("BindBranch", "Home")?BatchId=' + selectedSyllabusId;
+                }
+            });
+
+            $("#ddlBranch").change(function () {
+                var selectedBranch = $(this).val();
+                var inputValue = selectedBranch;
+                var encodedValue = encodeURIComponent(inputValue);              
+                if (selectedBranch !== '') {
+                    window.location.href = '@Url.Action("BindSemester", "Home")?Branch=' + encodedValue;
+                }
+            });
+
+            $("#ddlSemester").change(function () {
+                var selectedSemId = $(this).val();
+                if (selectedSemId !== '') {
+                    window.location.href = '@Url.Action("GetSemester", "Home")?SemId=' + selectedSemId;
+                }
+            });
+
+            $("#resetButton").click(function () {
+                window.location.href = '@Url.Action("ResetFunc", "Home")';
+            });
+
+        });
+    </script>
+
+    <style>
+        .center {
+            border: 1px solid;
+            margin: auto;
+            width: 100%;
+            padding: 10px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .h-space {
+            white-space: pre-wrap;
+        }
+
+        .dropdown-menu-center {
+            left: 50% !important;
+            right: auto !important;
+            text-align: center !important;
+            transform: translate(-50%, 0) !important;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-top: -25px;
+            background-color: white;
+            padding: 0 10px;
+            display: inline-block;
+        }
+
+        .table-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px solid black;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .data-table th, .data-table td {
+                border: 1px solid black;
+                text-align: center;
+            }
+
+
+        select option {
+            white-space: normal;
+        }
+
+        select {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <main>
+
+        <div style="margin-left: 600px;">
+            <img src="~/Image/bput-logo.png" />
+        </div>
+        <br />
+        <div style="text-indent: 200px;">
+            <h3>BIJU PATNAIK UNIVERSITY OF TECHNOLOGY ROURKELA, ODISHA</h3>
+        </div>
+            <div class="center" id="dropdown">
+                @*<div class="section-heading">
+                    Syllabus
+                </div>*@
+
+                @using (Html.BeginForm("SubmitForm", "Home", FormMethod.Post))
+                {
+                    @Html.EditorForModel()
+                    <table>
+                        <tr>
+                            <td style="text-indent: 450px;">Course  &nbsp;&nbsp;&nbsp;</td>
+                            <td>:&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                @Html.DropDownList("CourseList", ViewBag.CourseList as SelectList, "Select a Course", new { @class = "form-control form-select-sm form-select", id = "ddlCourse", @value = selectedCourse, style = "max-width:300px" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent: 450px;">Syllabus  &nbsp;&nbsp;&nbsp;</td>
+
+                            <td>:&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                @Html.DropDownList("syllabusList", ViewBag.SyllabusList as SelectList, "Select a Syllabus", new { @class = "form-control form-select-sm form-select", id = "ddlSyllabus", @value = selectedItemId, style = "max-width:300px" })
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="text-indent: 450px;">Branch  &nbsp;&nbsp;&nbsp;</td>
+                            <td>:&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                @Html.DropDownList("BranchList", ViewBag.BranchList as SelectList, "Select a Branch", new { @class = "form-control form-select-sm form-select", id = "ddlBranch", @value = selectedBranch, style = "max-width:300px" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent: 450px;">Semester  &nbsp;&nbsp;&nbsp;</td>
+                            <td>:&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                @Html.DropDownList("SemesterList", ViewBag.SemesterList as SelectList, "Select a Semester", new { @class = "form-control form-select-sm form-select", id = "ddlSemester", @value = selectedSemId, style = "max-width:300px" })
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <div style="margin-left: 600px;">
+                        <input type="submit" value="Submit" id="submitButton" />
+                        <input type="reset" value="Reset" id="resetButton" />
+                    </div>
+           
+            <br />
+            <br />
+
+            <div style="margin-left: 1px;">
+
+                @if (Model != null && Model.Count >= 1)
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>SubCode</th>
+                                <th>SubName</th>
+                                <th>SubTP</th>
+                                <th>SubType</th>
+                                <th>Credits</th>
+                                <th>Max.IntM</th>
+                                <th>Int.PassM</th>
+                                <th>Max.ExtM</th>
+                                <th>Ext.PassM</th>
+                                <th>Max.PracM</th>
+                                <th>Prac.PassM</th>
+                                <th>Prac.Credits</th>
+                                <th>Tot.Credits</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var studentInfo in Model)
+                            {
+                                <tr>
+                                    <td>@studentInfo.SubjectCODE</td>
+                                    <td style="text-align:left">@studentInfo.SubjectName</td>
+                                    <td>@studentInfo.SubjectTP</td>
+                                    <td>@studentInfo.SubType</td>
+                                    <td>@studentInfo.Credits</td>
+                                    <td>@studentInfo.MaxInternalMarks</td>
+                                    <td>@studentInfo.InternalPassMarks</td>
+                                    <td>@studentInfo.MaxExternalMarks</td>
+                                    <td>@studentInfo.ExternalPassMarks</td>
+                                    <td>@studentInfo.MaxPracticalMarks</td>
+                                    <td>@studentInfo.PracticalPassMarks</td>
+                                    <td>@studentInfo.PracticalCredits</td>
+                                    <td>@studentInfo.TotalCredits</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div style="text-align:center">
+                        @if (Model != null)
+                        {
+                            <p>No data available.</p>
+                        }
+
+                    </div>
+                }
+            </div>
+
+        }
+                </div>
+            </main>
+</body>
+</html>
